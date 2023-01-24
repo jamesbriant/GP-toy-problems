@@ -1,4 +1,4 @@
-import testfunctions as tfs
+import src.testfunctions as tfs
 import numpy as np
 
 from typing import List
@@ -84,8 +84,7 @@ class Simulator():
             output[(i*s):((i+1)*s), 0:p] = variable_params
             output[(i*s):((i+1)*s), p:(p+d)] = np.array([calibration_param_row]*d).reshape(-1, d)
 
-            sim_output = self.__simulation(variable_params, calibration_param_row)
-            output[i*s:(i+1)*s, -1] = sim_output
+            output[i*s:(i+1)*s, -1] = self.__simulation(variable_params, calibration_param_row)
         
         return output
 
@@ -125,7 +124,7 @@ class Simulator():
         calibration_field = booth.eval(xy)
         # k = calibration_param
         # k = 1 + (np.sin(3*calibration_param) + np.sin(10*calibration_param) + np.sin(30*calibration_param))/3
-        k = calibration_param
+        k = 1.5 + 0.3*calibration_param**3 - calibration_param
 
         return annual_field*monthly_fluctuation + day_field*hourly_fluctuation - 0.2*k*calibration_field
 
@@ -148,7 +147,10 @@ class Simulator():
 
 
     def __make_observations(self, variable_params) -> np.ndarray:
-        observations = self.run(np.array(self.true_params).reshape(1, -1), variable_params=variable_params)[:,-1] 
+        observations = self.run(
+            np.array(self.true_params).reshape(1, -1), 
+            variable_params=variable_params
+        )[:,-1] 
         observations += self.__errors(variable_params.shape[0])
         if self.include_bias == True:
             observations += self.__bias(variable_params)

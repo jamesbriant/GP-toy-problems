@@ -7,7 +7,7 @@ from scipy.stats import norm, beta, gamma
 # representing the mean of eta and delta.
 
 class Model:
-    """A class representing a model based on the Kennedy & O'Hagan (2001) framework.
+    """Class representing a model based on the Kennedy & O'Hagan (2001) framework.
     
     Model
     -----

@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import simulator as sim
+import src.simulator as sim
 import random
 import mogp_emulator
 
-from testfunctions import arrays_to_arraymesh, arraymesh_to_arrays
+from src.testfunctions import arrays_to_arraymesh, arraymesh_to_arrays
 
 random.seed(2022)
 

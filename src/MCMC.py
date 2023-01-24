@@ -1,7 +1,7 @@
 import numpy as np
 from copy import deepcopy
 
-from Model import Model
+from models.Model import Model
 
 from typing import Type
 
