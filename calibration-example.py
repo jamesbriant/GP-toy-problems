@@ -3,9 +3,9 @@ import numpy as np
 from mcmc.simulator import Simulator
 from mcmc.testfunctions import arrays_to_arraymesh, arraymesh_to_arrays
 
-from mcmc.newmcmc import MCMC
+from mcmc.mcmc import MCMC
 from mcmc.data import Data
-from mcmc.models.newmodel import Model
+from mcmc.models.model import Model
 from mcmc.chain import Chain
 from mcmc.parameter import Parameter
 
