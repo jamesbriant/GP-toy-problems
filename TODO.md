@@ -1,0 +1,13 @@
+- [x]  Work on calc_prior(). Prior data is to be stored in the Parameters. The summed values are to be stored in Model for easy/quick access when calculating posteriors.
+- [x]  Check underscore attributes in `calc_()` methods in `newmodel.py`
+- [ ]  Move `calc_r()` functions into `Kernel` module
+- [ ]  Change parameters to be stored within dictionaries
+    - [ ]  `self.params = {"beta1": Parameter}`
+    - [ ]  `self.hyperparams = {"": Parameter}`
+- [ ]  Improve MCMC outputs. Use `dict` for ensuring outputs are in the right order?
+- [ ]  Select better chain starting points
+    - [ ]  sample from prior?
+
+- [ ]  Write documentation
+    - [ ]  Make doc files
+    - [ ]  See Sphinx

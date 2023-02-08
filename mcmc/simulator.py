@@ -1,10 +1,16 @@
-import src.testfunctions as tfs
+from . import testfunctions as tfs
 import numpy as np
 
 from typing import List
 
 class Simulator():
-    def __init__(self, true_params: List = [1.5], variable_params: np.ndarray = None, include_bias: bool = True, set_seed: int = 2022):
+    def __init__(
+        self, 
+        true_params: List = [1.5], 
+        variable_params: np.ndarray = None, 
+        include_bias: bool = True, 
+        set_seed: int = 2022
+    ):
         """Method representing a huge simulation, eg weather forecast, which accepts 
         s variable parameters and d calibration parameters.
 
@@ -40,7 +46,11 @@ class Simulator():
         np.random.seed(set_seed)
 
 
-    def run(self, calibration_params: np.ndarray, variable_params: np.ndarray = None) -> np.ndarray:
+    def run(
+        self, 
+        calibration_params: np.ndarray, 
+        variable_params: np.ndarray = None
+    ) -> np.ndarray:
         """Method representing a huge simulation, eg weather forecast, which accepts 
         s variable parameters and d calibration parameters.
 
@@ -102,7 +112,11 @@ class Simulator():
         return variable_params
 
 
-    def __simulation(self, variable_params: np.ndarray, calibration_param: float) -> np.ndarray:
+    def __simulation(
+        self, 
+        variable_params: np.ndarray, 
+        calibration_param: float
+    ) -> np.ndarray:
         # x =         variable_params[:, 0]
         # y =         variable_params[:, 1]
         xy =        variable_params[:, 0:2]
