@@ -1,4 +1,4 @@
-from . import testfunctions as tfs
+import testfunctions as tfs
 import numpy as np
 
 from typing import List

@@ -1,7 +1,7 @@
 import numpy as np
 
-from mcmc.simulator import Simulator
-from mcmc.testfunctions import arrays_to_arraymesh, arraymesh_to_arrays
+from simulator import Simulator
+from testfunctions import arrays_to_arraymesh, arraymesh_to_arrays
 
 from mcmc.mcmc import MCMC
 from mcmc.data import Data
