@@ -1,9 +1,5 @@
-import numpy as np
-from scipy.stats import norm, beta, gamma
-
 from mcmc.data import Data
 from .base import BaseModel, Parameter
-from mcmc.kernels import log_RBF
 
 class Model(BaseModel):
     """
