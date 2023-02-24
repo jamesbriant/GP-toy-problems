@@ -4,26 +4,23 @@ from .base import BaseModel, Parameter
 class Model(BaseModel):
     """
     """
-    _accepted_params = {
+
+    #ORDERED LIST FOR MCMC
+    _accepted_params = [
         #define parameter name strings here
-    }
-    _accepted_hyperparams = {
-        #define hyperparameter names strings here
-    }
+    ]
 
 
     def __init__(
         self, 
-        params: dict, 
-        hyperparams: dict, 
+        params: dict,
         *args, 
         **kwargs
     ):
         """
         """
         #DO NOT DELETE THIS LINE
-        super().__init__(params, hyperparams, *args, **kwargs)
-
+        super().__init__(params, *args, **kwargs)
     
     def prepare_for_mcmc(self, data: Data) -> None:
         """Prepares the model for MCMC by calculating all the requisite intermediary steps
