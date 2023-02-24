@@ -32,9 +32,7 @@ model = Model(
             'rho',
             np.array([1]),
             positive=True,
-        )
-    }, 
-    hyperparams={
+        ),
         'l_c1_x': Parameter(
             'l_c1_x',
             np.array([0.25, 0.25]),

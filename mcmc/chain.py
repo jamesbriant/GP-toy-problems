@@ -1,3 +1,5 @@
+from typing import List
+
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -7,7 +9,7 @@ class Chain:
     """
     """
     chain_length: int
-    parameter_names: set
+    parameter_names: List[str]
     _chain: dict = field(init=False)
     _index: int = field(init=False, default=0)
 

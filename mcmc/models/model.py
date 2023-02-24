@@ -2,38 +2,54 @@ import numpy as np
 from scipy.stats import norm, beta, gamma
 
 from mcmc.data import Data
-from .base import BaseModel, Parameter
+from mcmc.models.base import BaseModel
+from mcmc.parameter import Parameter
 from mcmc.kernels import log_RBF
 
 class Model(BaseModel):
     """
     """
-    _accepted_params = {
+    # _accepted_params = {
+    #     'beta1',
+    #     'beta2',
+    #     'theta',
+    #     'rho'
+    # }
+    # _accepted_hyperparams = {
+    #     'l_c1_x',
+    #     'l_c1_t',
+    #     'sigma_c1',
+    #     'l_c2_x',
+    #     'sigma_c2',
+    #     'lambda'
+    # }
+
+    # ORDERED LIST FOR MCMC
+    _accepted_params = [
         'beta1',
         'beta2',
         'theta',
-        'rho'
-    }
-    _accepted_hyperparams = {
+        'rho',
         'l_c1_x',
         'l_c1_t',
         'sigma_c1',
         'l_c2_x',
         'sigma_c2',
         'lambda'
-    }
+    ]
 
 
     def __init__(
         self, 
         params: dict, 
-        hyperparams: dict, 
+        # hyperparams: dict, 
         *args, 
         **kwargs
     ):
         """
         """
-        super().__init__(params, hyperparams, *args, **kwargs)
+        # super().__init__(params, hyperparams, *args, **kwargs)
+        super().__init__(params, *args, **kwargs)
 
     
     def prepare_for_mcmc(self, data: Data) -> None:

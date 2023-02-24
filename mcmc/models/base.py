@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -9,43 +9,31 @@ from mcmc.data import Data
 
 class BaseModel(ABC):
     """Class representing a model based on the Kennedy & O'Hagan (2001) framework.
-    
-    Model
-    -----
-    y_f(x) = rho*eta(x,theta) + delta(x) + e(x)
     """
 
-    _accepted_params = set()
-    _accepted_hyperparams = set()
+    #ORDERED LIST FOR MCMC
+    _accepted_params = []
 
 
     @abstractmethod
     def __init__(
         self, 
         params: Dict[str, Parameter], 
-        hyperparams: Dict[str, Parameter], 
         *args, 
         **kwargs
     ):
         """
         """
 
-        if set(params.keys()) != self._accepted_params:
+        if set(params.keys()) != set(self._accepted_params):
             raise ValueError(f"Parameter names must match exactly for the chosen model. {self._accepted_params}")
-        if set(hyperparams.keys()) != self._accepted_hyperparams:
-            raise ValueError(f"Hyperparameter names must match exactly for the chosen model. {self._accepted_hyperparams}")
+
+        self.params = params
 
         self.m_d = None
         self.V_d = None
         self.V_d_chol = None
         self._prior_densities = {}
-
-        #Combine params and hyperparams into a single attribute, params.
-        #There is no reason to distinquish between them.
-        # #Python 3.9+
-        # self.params = params | hyperparams
-        #Python 3.5+
-        self.params = {**params, **hyperparams}
 
         self.total_param_count_long = 0
         for param in self.params.values():
@@ -61,21 +49,6 @@ class BaseModel(ABC):
         #Calculate priors
         for param in self.params.values():
             self.calc_prior(param)
-
-
-    def get_param_names(self) -> set:
-        """Returns set of parameter names.
-        """
-        return self._accepted_params.union(self._accepted_hyperparams)
-
-    
-    def get_param_long_names(self) -> set:
-        """Returns set of parameter names with index numbers appended.
-        """
-        output = set()
-        for name, param in self.params.items():
-            output.update([f"{name}_{i}" for i in range(len(param))])
-        return output
 
 
     @abstractmethod
@@ -125,6 +98,23 @@ class BaseModel(ABC):
     def calc_logpost(self, data: Data):
         self.calc_loglike(data)
         self.logpost = np.sum(list(self._prior_densities.values())) + self.loglike
+
+
+    def get_param_names(self) -> List[str]:
+        """Returns set of parameter names.
+        """
+        return self._accepted_params
+
+    
+    def get_param_long_names(self) -> List[str]:
+        """Returns set of parameter names with index numbers appended.
+        """
+        output = []
+        for name, param in self.params.items():
+            for i in range(len(param)):
+                output.append(f"{name}_{i}")
+        print(output)
+        return output
 
 
     def get_model_params(self) -> dict:
