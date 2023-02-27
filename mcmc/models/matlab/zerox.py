@@ -95,7 +95,7 @@ class Model(BaseModel):
 
         self.m_d = np.zeros(
                 (
-                    data.y_n + data.z_n, 
+                    data.n + data.m, 
                     1 + len(self.params['theta'])
                 )
             )
@@ -108,7 +108,7 @@ class Model(BaseModel):
     def calc_sigma_eta_1_1(self, data: Data) -> None:
         """
         """
-        
+
 
     
     def calc_V_d(self, data: Data) -> None:
@@ -122,3 +122,11 @@ class Model(BaseModel):
         ############################################################
         #DO NOT DELETE THIS LINE
         super().calc_V_d(data)
+
+
+def dist_matrix(data: Data) -> np.ndarray:
+    D = np.zeros((
+        data.m + data.n,
+        data.m + data.n,
+        data.x_c.shape
+    ))

@@ -196,29 +196,29 @@ class Model(BaseModel):
     def calc_H1D1(self, data: Data) -> None:
         """Simulation regression function (H1) at simulation locations (D1)
         """
-        self._H1D1 = np.ones(data.y_n)
+        self._H1D1 = np.ones(data.m)
 
 
     def calc_H1D2(self, data: Data) -> None:
         """Simulation regression function (H1) at observation locations (D2)
         """
-        self._H1D2 = np.ones(data.z_n)
+        self._H1D2 = np.ones(data.n)
 
 
     def calc_H2D2(self, data: Data) -> None:
         """Discrepancy regression function (H2) at observation locations (D2)
         """
-        self._H2D2 = np.ones(data.z_n)
+        self._H2D2 = np.ones(data.n)
 
 
     def calc_H(self, data: Data) -> None:
         """Regression function all data locations.
         """
-        self._H = np.zeros((data.y_n + data.z_n, 2))
+        self._H = np.zeros((data.m + data.n, 2))
 
-        self._H[0:data.y_n, 0] = self._H1D1
-        self._H[data.y_n:, 0] = self.params['rho'].values*self._H1D2
-        self._H[data.y_n:, 1] = self._H2D2
+        self._H[0:data.m, 0] = self._H1D1
+        self._H[data.m:, 0] = self.params['rho'].values*self._H1D2
+        self._H[data.m:, 1] = self._H2D2
 
     
     def calc_m_d(self, data: Data) -> None:
@@ -235,9 +235,9 @@ class Model(BaseModel):
     def calc_V1D1(self, data: Data) -> None:
         """Simulation variance (V1) at simulation locations (D1)
         """
-        V1D1 = np.zeros((data.y_n, data.y_n))
+        V1D1 = np.zeros((data.m, data.m))
         #Create the upper half of the matrix, starting with first row
-        for i in range(data.y_n - 1):
+        for i in range(data.m - 1):
             # V1D1[i, (i+1):] = r1_calc(
             #     self.params['l_c1_x'],
             #     data.x_c[i, :].reshape(1, -1), 
@@ -269,7 +269,7 @@ class Model(BaseModel):
             # with open('temp.txt', 'a') as f:
             #     f.write(str(temp))
         V1D1 += V1D1.T
-        self._V1D1_unscaled = V1D1 + np.identity(data.y_n)
+        self._V1D1_unscaled = V1D1 + np.identity(data.m)
         self.scale_V1D1()
 
     
@@ -282,8 +282,8 @@ class Model(BaseModel):
     def calc_V1D2(self, data: Data) -> None:
         """Simulation variance (V1) at observation data locations (D2)
         """
-        V1D2 = np.zeros((data.z_n, data.z_n))
-        for i in range(data.z_n - 1):
+        V1D2 = np.zeros((data.n, data.n))
+        for i in range(data.n - 1):
             # V1D2[i, (i+1):] = r1_calc(
             #     self.params['l_c1_x'],
             #     data.x_f[i, :].reshape(1, -1), 
@@ -302,7 +302,7 @@ class Model(BaseModel):
                 )
             )
         V1D2 += V1D2.T
-        self._V1D2_unscaled = V1D2 + np.identity(data.z_n)
+        self._V1D2_unscaled = V1D2 + np.identity(data.n)
         self.scale_V1D2()
 
 
@@ -317,8 +317,8 @@ class Model(BaseModel):
         """
         # theta = self.params['theta'].values
 
-        C1D1D2 = np.zeros((data.z_n, data.y_n))
-        for i in range(data.z_n):
+        C1D1D2 = np.zeros((data.n, data.m))
+        for i in range(data.n):
             # C1D1D2[i, :] = r1_calc(
             #     self.params['l_c1_x'],
             #     data.x_f[i, :].reshape(1, -1),
@@ -360,8 +360,8 @@ class Model(BaseModel):
     def calc_V2D2(self, data:Data) -> None:
         """Discrepancy variance (V2) at observation data locations (D2)
         """
-        V2D2 = np.zeros((data.z_n, data.z_n))
-        for i in range(data.z_n - 1):
+        V2D2 = np.zeros((data.n, data.n))
+        for i in range(data.n - 1):
             # V2D2[i, (i+1):] = r2_calc(
             #     self.params['l_c2_x'],
             #     data.x_f[i, :].reshape(1, -1), 
@@ -381,7 +381,7 @@ class Model(BaseModel):
                 )
             )
         V2D2 += V2D2.T
-        self._V2D2_unscaled = V2D2 + np.identity(data.z_n)
+        self._V2D2_unscaled = V2D2 + np.identity(data.n)
         self.scale_V2D2()
 
     
@@ -394,8 +394,8 @@ class Model(BaseModel):
     def calc_V_d(self, data: Data) -> None:
         """
         """
-        a = data.y_n
-        b = data.z_n
+        a = data.m
+        b = data.n
 
         self.V_d = np.zeros((a+b, a+b))
 
