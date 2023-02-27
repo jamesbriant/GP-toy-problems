@@ -9,21 +9,6 @@ from mcmc.kernels import log_RBF
 class Model(BaseModel):
     """
     """
-    # _accepted_params = {
-    #     'beta1',
-    #     'beta2',
-    #     'theta',
-    #     'rho'
-    # }
-    # _accepted_hyperparams = {
-    #     'l_c1_x',
-    #     'l_c1_t',
-    #     'sigma_c1',
-    #     'l_c2_x',
-    #     'sigma_c2',
-    #     'lambda'
-    # }
-
     # ORDERED LIST FOR MCMC
     _accepted_params = [
         'beta1',
@@ -41,14 +26,12 @@ class Model(BaseModel):
 
     def __init__(
         self, 
-        params: dict, 
-        # hyperparams: dict, 
+        params: dict,
         *args, 
         **kwargs
     ):
         """
         """
-        # super().__init__(params, hyperparams, *args, **kwargs)
         super().__init__(params, *args, **kwargs)
 
     
