@@ -1,14 +1,16 @@
-import numpy as np
+############################################################
+# Implementation of the cal_example_zerox.m
+# Used to verify the code base works without major errors.
+############################################################
 
-from simulator import Simulator
-from testfunctions import arrays_to_arraymesh, arraymesh_to_arrays
+import numpy as np
 
 from mcmc.mcmc import MCMC
 from mcmc.data import Data
-from mcmc.models.kennedyohagan import Model
 from mcmc.chain import Chain
 from mcmc.parameter import Parameter
 
+from mcmc.models.matlab.zerox import Model
 
 #################
 ##### MODEL #####

@@ -1,29 +1,34 @@
 from mcmc.data import Data
-from .base import BaseModel, Parameter
+from mcmc.models.base import BaseModel
+from mcmc.parameter import Parameter
+
+import numpy as np
 
 class Model(BaseModel):
     """
     """
-    _accepted_params = {
-        #define parameter name strings here
-    }
-    _accepted_hyperparams = {
-        #define hyperparameter names strings here
-    }
+
+    #ORDERED LIST FOR MCMC
+    _accepted_params = [
+        "theta",
+        "beta1",
+        "lambda_eta",
+        "lambda_epsilon_eta",
+        "lambda_delta",
+        "lambda_epsilon"
+    ]
 
 
     def __init__(
         self, 
-        params: dict, 
-        hyperparams: dict, 
+        params: dict,
         *args, 
         **kwargs
     ):
         """
         """
         #DO NOT DELETE THIS LINE
-        super().__init__(params, hyperparams, *args, **kwargs)
-
+        super().__init__(params, *args, **kwargs)
     
     def prepare_for_mcmc(self, data: Data) -> None:
         """Prepares the model for MCMC by calculating all the requisite intermediary steps
@@ -88,12 +93,22 @@ class Model(BaseModel):
         ############################################################
         #Place your code here
 
-
+        self.m_d = np.zeros(
+                (
+                    data.y_n + data.z_n, 
+                    1 + len(self.params['theta'])
+                )
+            )
 
         ############################################################
         #DO NOT DELETE THIS LINE
         super().calc_m_d(data)
 
+
+    def calc_sigma_eta_1_1(self, data: Data) -> None:
+        """
+        """
+        
 
     
     def calc_V_d(self, data: Data) -> None:
