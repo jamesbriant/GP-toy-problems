@@ -36,12 +36,9 @@ class Model(BaseModel):
         # They must appear in the correct order.
 
         ############################################################
-        #DO NOT DELETE THESE LINES
-        self.calc_m_d(data)
-        self.calc_V_d(data)
-        self.calc_logpost(data)
         #The next line calculates and saves the prior densities.
-        super().prepare_for_mcmc(data)
+        #DO NOT DELETE THIS LINE
+        super().prepare_for_mcmc(data) 
 
 
     def update(

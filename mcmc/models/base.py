@@ -49,6 +49,10 @@ class BaseModel(ABC):
         #Calculate priors
         for param in self.params.values():
             self.calc_prior(param)
+            
+        self.calc_m_d(data)
+        self.calc_V_d(data)
+        self.calc_logpost(data)
 
 
     @abstractmethod
