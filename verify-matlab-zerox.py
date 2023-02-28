@@ -18,52 +18,33 @@ from mcmc.models.matlab.zerox import Model
 
 model = Model(
     params={
-        'beta1': Parameter(
-            'beta1',
-            np.array([0.1]),
-        ),
-        'beta2': Parameter(
-            'beta2',
-            np.array([0]),
-        ),
         'theta': Parameter(
             'theta',
+            np.array([0.5, 0.5, 0.5]),
+        ),
+        'beta_eta': Parameter(
+            'beta_eta',
+            np.array([0.5, 0.5, 0.5, 0.5]),
+        ),
+        # 'beta_delta': Parameter(
+        #     'beta_delta',
+        #     np.array([1]),
+        # ),
+        'lambda_eta': Parameter(
+            'lambda_eta',
             np.array([1]),
         ),
-        'rho': Parameter(
-            'rho',
+        'lambda_delta': Parameter(
+            'lambda_delta',
+            np.array([10]),
+        ),
+        'lambda_epsilon': Parameter(
+            'lambda_epsilon',
             np.array([1]),
-            positive=True,
         ),
-        'l_c1_x': Parameter(
-            'l_c1_x',
-            np.array([0.25, 0.25]),
-            positive=True,
-        ),
-        'l_c1_t': Parameter(
-            'l_c1_x',
-            np.array([0.25]),
-            positive=True,
-        ),
-        'sigma_c1': Parameter(
-            'l_c1_x',
-            np.array([1]),
-            positive=True,
-        ),
-        'l_c2_x': Parameter(
-            'l_c1_x',
-            np.array([0.1, 0.1]),
-            positive=True,
-        ),
-        'sigma_c2': Parameter(
-            'l_c1_x',
-            np.array([1]),
-            positive=True,
-        ),
-        'lambda': Parameter(
-            'l_c1_x',
-            np.array([1]),
-            positive=True,
+        'lambda_epsilon_eta': Parameter(
+            'lambda_epsilon_eta',
+            np.array([300]),
         )
     }
 )
@@ -74,74 +55,37 @@ model = Model(
 ##### DATA #####
 ################
 
-true_params = [1.5745]
+DATAFIELD = np.loadtxt('data/cal_example_field.txt')
+DATACOMP = np.loadtxt('data/cal_example_comp.txt')
 
-a = 0
-b = 3
-n = 10
-x_locations = np.linspace(a, b, n)
-y_locations = x_locations
-t_month = 6
-t_hour = 12
+# xf = DATAFIELD[:, 0]
+# xf = np.log(xf)
+# xf = (xf - np.min(xf))/(np.max(xf) - np.min(xf))
+xf = np.zeros((8,1))
 
-variable_params = arrays_to_arraymesh(x_locations, y_locations, t_month, t_hour)
-X = variable_params[:, 0]
-Y = variable_params[:, 1]
+# xc = DATACOMP[:, 3]
+xc = np.zeros((32, 3))
+tc = DATACOMP[:, :3]
 
-simulator = Simulator(true_params, variable_params)
+yf = DATAFIELD[:, 1]
+yc = DATACOMP[:, 4]
 
-## Generate a set of simulation data
-# calibration_points = [1.1, 1.15, 1.2, 1.5, 1.7, 1.8, 1.9]
-calibration_points = [1.2, 1.5, 1.9]
-calibration_params = np.array(calibration_points).reshape(-1, 1)
-experiment1 = simulator.run(calibration_params)
-print(experiment1.shape)
-simulation_output = experiment1[:, -1]
-regression_params = experiment1[:, [0,1,4]]
+#Standardize full response using mean and std of yc
+yc_mean = np.mean(yc)
+yc_std = np.std(yc)
+yc_standardized = (yc - yc_mean)/yc_std
+yf_standardized = (yf - yc_mean)/yc_std
 
-N = 30
-rng = np.random.default_rng()
-x_obs = a+(b-a)*rng.random(N)
-y_obs = a+(b-a)*rng.random(N)
-observation_variables = np.vstack([x_obs, y_obs, [t_month]*N, [t_hour]*N]).T
-
-observations = simulator.get_observations(observation_variables)[:, -1]
-
-xc  = regression_params[:, [0,1]]
-t   = regression_params[:, 2].reshape(-1, 1)
-y   = simulation_output
-xf  = observation_variables[:, [0,1]]
-z   = observations
-
-y_mean = np.mean(y)
-y_std = np.std(y)
-y_normalised = ((y - y_mean)/y_std)
-
-z_mean = np.mean(z)
-z_std = np.std(z)
-z_normalised = ((z - z_mean)/z_std)
-
-xc_standardised = np.zeros_like(xc)
-xc_min = np.min(xc, axis=0).flatten()
-xc_max = np.max(xc, axis=0).flatten()
-xf_standardised = np.zeros_like(xf)
-xf_min = np.min(xf, axis=0).flatten()
-xf_max = np.max(xf, axis=0).flatten()
-
-for k in range(2):
-    xc_standardised[:, k] = (xc[:, k] - xc_min[k])/(xc_max[k] - xc_min[k])
-    xf_standardised[:, k] = (xf[:, k] - xf_min[k])/(xf_max[k] - xf_min[k])
-
-t_min = np.min(t)
-t_max = np.max(t)
-t_standardised = (t - t_min)/(t_max - t_min)
+tc_normalized = np.zeros_like(tc)
+for k in range(tc.shape[1]):
+    tc_normalized[:, k] = (tc[:, k] - np.min(tc[:, k]))/(np.max(tc[:, k]) - np.min(tc[:, k]))
 
 data = Data(
-    x_c = xc_standardised, 
-    t   = t_standardised,
-    y   = y_normalised,
-    x_f = xf_standardised,
-    z   = z_normalised
+    x_c = xc, 
+    t   = tc_normalized,
+    y   = yc_standardized,
+    x_f = xf,
+    z   = yf_standardized
 )
 
 
@@ -152,20 +96,16 @@ data = Data(
 ################
 
 proposal_widths = {
-    'beta1': 0.2,
-    'beta2': 0.2,
-    'theta': 0.3,
-    'rho': 0.2,
-    'l_c1_x': [0.1, 0.1],
-    'l_c1_t': 0.1,
-    'l_c2_x': [0.4, 0.4],
-    'sigma_c1': 0.15,
-    'sigma_c2': 0.2,
-    'lambda': 0.5
+    'theta': [0.15, 0.15, 0.15],
+    'beta_eta': [0.15, 0.15, 0.15, 0.15],
+    'lambda_eta': 1,
+    'lambda_epsilon_eta': 100,
+    'lambda_delta': 5,
+    'lambda_epsilon': 1
 }
 
 mcmc = MCMC(
-    max_iter = 250,
+    max_iter = 1000,
     model = model,
     data = data,
     proposal_widths = proposal_widths
@@ -173,6 +113,11 @@ mcmc = MCMC(
 
 mcmc.run()
 
+
+
+####################
+##### ANALYSIS #####
+####################
 
 output = mcmc.chain._chain
 for item, value in output.items():
