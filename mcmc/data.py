@@ -12,10 +12,10 @@ class Data:
     z: np.ndarray
 
     def __post_init__(self) -> None:
-        self.d = np.hstack([self.y, self.z])
+        self.d = np.hstack([self.z, self.y])
 
-        self.m = self.y.shape[0]
         self.n = self.z.shape[0]
+        self.m = self.y.shape[0]
 
-        self.p = self.y.shape[1]
+        self.p = self.x_f.shape[1]
         self.q = self.t.shape[1]
